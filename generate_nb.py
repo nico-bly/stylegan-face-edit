@@ -27,10 +27,11 @@ def generate_images(
     outdir: str,
     class_idx: Optional[int] = None,
     projected_w: Optional[str] = None,
-    show: bool = False
+    show: bool = False,
+    device: str = 'cpu'
 ):
     print('Loading networks from "%s"...' % network_pkl)
-    device = torch.device('cpu')
+    device = torch.device(device)
     with dnnlib.util.open_url(network_pkl) as f:
         G = legacy.load_network_pkl(f)['G_ema'].to(device)
 
