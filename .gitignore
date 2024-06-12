@@ -1,1 +1,14 @@
+<<<<<<< HEAD
 ignored_outputs/
+=======
+# Ignore the data in the following directory
+ignored_outputs/
+
+output_directory/
+
+output_directory_pca/
+
+kpca_model_rbf_100.joblib
+
+kpca_model_rbf_100compo_10000sampels.joblib
+>>>>>>> cc194d1278a69e4d207280ce690e5bc2b87acd38
