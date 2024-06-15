@@ -8,3 +8,5 @@ output_directory_pca/
 kpca_model_rbf_100.joblib
 
 kpca_model_rbf_100compo_10000sampels.joblib
+
+vae_model_test.pth

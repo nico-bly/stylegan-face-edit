@@ -4,8 +4,6 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.preprocessing import StandardScaler
 import numpy as np
-import generate_nb
-import matplotlib.pyplot as plt
 import torch
 import numpy as np
 import dnnlib
@@ -18,20 +16,18 @@ import projector_nb
 importlib.reload(projector_nb)
 import numpy as np
 import torch
-import os
-import imageio
-from tqdm import tqdm
+
 import matplotlib.pyplot as plt
 
 from joblib import dump, load
-from sklearn.decomposition import KernelPCA
-from sklearn.metrics.pairwise import cosine_similarity
+
 
 network = "https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada-pytorch/pretrained/ffhq.pkl"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 with dnnlib.util.open_url(network) as fp:
         G = legacy.load_network_pkl(fp)['G_ema'].requires_grad_(False).to(device)
+
 def generate_samples(G, num_samples):
     z_samples = np.random.RandomState().randn(num_samples, 512).astype(np.float32) 
     
@@ -40,6 +36,7 @@ def generate_samples(G, num_samples):
     w_samples = w_samples[:,0,:]
 
     return w_samples
+
 class VAE(nn.Module):
     def __init__(self, input_dim, hidden_dim, latent_dim):
         super(VAE, self).__init__()
@@ -48,12 +45,20 @@ class VAE(nn.Module):
         self.encoder = nn.Sequential(
             nn.Linear(input_dim, hidden_dim),
             nn.ReLU(),
-            nn.Linear(hidden_dim, latent_dim * 2)  # 2 for mean and variance
+            nn.Linear(hidden_dim, hidden_dim // 2),
+            nn.Sigmoid(),
+            nn.Linear(hidden_dim // 2, hidden_dim // 4),
+            nn.ReLU(),
+            nn.Linear(hidden_dim // 4, latent_dim * 2)  
         )
         
-        # Decoder
+        #  Decoder
         self.decoder = nn.Sequential(
-            nn.Linear(latent_dim, hidden_dim),
+            nn.Linear(latent_dim, hidden_dim // 4),
+            nn.ReLU(),
+            nn.Linear(hidden_dim // 4, hidden_dim // 2),
+            nn.Sigmoid(),
+            nn.Linear(hidden_dim // 2, hidden_dim),
             nn.ReLU(),
             nn.Linear(hidden_dim, input_dim),
             nn.Sigmoid()
@@ -82,19 +87,21 @@ class VAE(nn.Module):
 def loss_function(recon_x, x, mean, log_var):
     BCE = nn.functional.binary_cross_entropy(recon_x, x, reduction='sum')
     KLD = -0.5 * torch.sum(1 + log_var - mean.pow(2) - log_var.exp())
+    
     return BCE + KLD
 
 # Parameters
 input_dim = 512
 hidden_dim = 256
 latent_dim = 20
-batch_size = 64
+batch_size = 16
 epochs = 20
 learning_rate = 1e-3
 
 
 scaler = StandardScaler()
-w_samples = generate_samples(G, 50000)
+w_samples = generate_samples(G, 10000)
+
 w_samples_normalized = scaler.fit_transform(w_samples)
 
 # Min-max scaling to [0, 1]
@@ -125,4 +132,4 @@ for epoch in range(epochs):
 
 print("Training complete.")
 
-torch.save(vae.state_dict(), 'vae_model.pth')
+torch.save(vae.state_dict(), 'vae_model_test.pth')
