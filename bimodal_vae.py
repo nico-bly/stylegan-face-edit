@@ -61,7 +61,6 @@ print(np.min(w_samples_scaled))
 print(np.max(w_samples_scaled))
 dataset = TensorDataset(torch.tensor(w_samples_scaled, dtype=torch.float32))
 dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
-scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5, verbose=True)
 
 input_dim = 512
 hidden_dim = 256
