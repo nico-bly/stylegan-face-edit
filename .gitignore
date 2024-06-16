@@ -7,7 +7,8 @@ ignored_outputs/
 output_directory/
 
 output_directory_pca/
-
+models/
+output_directory_autoencoder/
 kpca_model_rbf_100.joblib
 
 kpca_model_rbf_100compo_10000sampels.joblib
