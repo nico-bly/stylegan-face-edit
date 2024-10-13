@@ -18,3 +18,11 @@ vae_model_test.pth
 =======
 >>>>>>> cc194d1278a69e4d207280ce690e5bc2b87acd38
 >>>>>>> 657928549f9cc79160d9bd49ab68e113cfa6d4be
+
+models/*
+stylegan_cpu.ipynb
+stylegan_gpu_vae.ipynb
+merged1_2.ipynb
+testing_vae-1.ipynb
+stylegan_char.ipynb
+stylegan_gpu_vae.ipynb
