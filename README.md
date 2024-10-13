@@ -27,3 +27,8 @@ An other way to capture more complex relationship in the latent space is to modi
 Generation of 50k latent code and classifciation of resulting images on the presence of different attributes on the generated image.
 
 SVM on these attributesto find separation in the latent space and moving on the normal vector of this hyperplan
+
+
+
+
+The results of the unsupervised analysis are present in the unsupervised.ipynb file
